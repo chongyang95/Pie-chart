@@ -1,0 +1,607 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(sf)
+```
+
+```{r}
+
+# Rename the dataset
+cnglobalinvestment <- China_Global_Investment_Tracker_2023_Fall
+
+```
+
+```{r}
+
+# Filter the dataset for the selected year
+selected_data <- cnglobalinvestment %>%
+  filter(Year == 2023)
+
+```
+
+```{r}
+# Rename the dataset
+cnglobalinvestment1 <- China_Global_Investment_Tracker_2023_Fall
+```
+
+```{r}
+rm(cnglobalinvestment)
+```
+
+```{r}
+# Assuming your dataset is called 'my_data' and the column you want to clean is called 'my_column'
+
+# Remove non-numeric characters
+cnglobalinvestment1$`China Global Investment Tracker` <- gsub("[^0-9.-]", "", cnglobalinvestment1$`China Global Investment Tracker`)
+
+# Convert the column from character to numeric
+cnglobalinvestment1$`China Global Investment Tracker` <- as.numeric(cnglobalinvestment1$`China Global Investment Tracker`)
+
+# Remove missing values
+cnglobalinvestment1 <- na.omit(cnglobalinvestment1)
+
+```
+
+```{r}
+# Filter the dataset for the selected year
+selected_data <- cnglobalinvestment1 %>%
+  filter(`China Global Investment Tracker` == 2023)
+```
+
+```{r}
+rm(cnglobalinvestment1)
+rm(frankfurt_data, result, selected_data, temp_frankfurt, excel_data, data)
+```
+
+```{r}
+# Create an empty data frame with a specific column name
+China_Global_Investment_Tracker_2023_Fall <- data.frame(Year = numeric(1))  # Change 'column_name' to the desired column name
+
+# Assign values to the column
+China_Global_Investment_Tracker_2023_Fall$Year <- c(2023)  # Replace with your values
+
+# Print the dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+
+```
+
+```{r}
+rm(China_Global_Investment_Tracker_2023_Fall)
+```
+
+```{r}
+
+# Assuming your dataset is called 'my_data' and you want to filter out specific values from column 'column_name'
+
+# Filter out specific values from the column
+filtered_data <- China_Global_Investment_Tracker_2023_Fall %>%
+  filter(Year != "2005")
+
+# Print the filtered dataset
+print(filtered_data)
+
+```
+
+```{r}
+
+# Replace all values except the one you want to keep
+China_Global_Investment_Tracker_2023_Fall$Year[China_Global_Investment_Tracker_2023_Fall$Year != "2023"] <- NA
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+
+```
+
+```{r}
+
+# Remove rows with NA values in the specified column
+China_Global_Investment_Tracker_2023_Fall <- China_Global_Investment_Tracker_2023_Fall[!is.na(China_Global_Investment_Tracker_2023_Fall$Year), ]
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+
+```
+
+```{r}
+# Replace all values except the one you want to keep
+China_Global_Investment_Tracker_2023_Fall$Region[China_Global_Investment_Tracker_2023_Fall$Region != "Europe"] <- NA
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+```
+
+```{r}
+# Remove rows with NA values in the specified column
+China_Global_Investment_Tracker_2023_Fall <- China_Global_Investment_Tracker_2023_Fall[!is.na(China_Global_Investment_Tracker_2023_Fall$Region), ]
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+```
+
+```{r}
+# Compute the sum or proportions of the selected columns
+selected_columns <- China_Global_Investment_Tracker_2023_Fall[, c("Quantity in Millions", "Country")]
+column_sums <- colSums(selected_columns)
+
+# Create a pie chart
+pie(column_sums, labels = names(column_sums), main = "Pie Chart for selected columns")
+
+```
+
+```{r}
+# Convert columns to numeric
+China_Global_Investment_Tracker_2023_Fall$Country <- as.numeric(China_Global_Investment_Tracker_2023_Fall$Country)
+
+# Compute the sum of each column
+column_sums <- colSums(China_Global_Investment_Tracker_2023_Fall[, c("Quantity in Millions", "Country")])
+```
+
+```{r}
+# Assuming your dataset is called 'my_data' and the column you want to convert is called 'numeric_column'
+
+# Convert the column from numeric to character
+China_Global_Investment_Tracker_2023_Fall$Country <- as.character(China_Global_Investment_Tracker_2023_Fall$Country)
+
+```
+
+```{r}
+
+# Combine values from the same column together
+combined_values <- paste(selected_columns$`Quantity in Millions`, collapse = "1, 9, 11, 17")  # Use paste() with collapse parameter
+
+# Print the combined values
+print(selected_columns)
+
+```
+
+```{r}
+
+# Select specific values based on condition
+selected_values <- selected_columns$`Quantity in Millions`[selected_columns$`Quantity in Millions` == "A"]
+
+# Combine selected values into a single string
+combined_values <- paste(selected_values, collapse = "1, 9, 11, 17")
+
+# Print the combined values
+print(combined_values)
+
+```
+
+```{r}
+# Sample data
+selected_columns <- data.frame(
+  category = c("A", "B", "A", "B", "C"),  # Character column
+  value = c(10, 20, 15, 25, 30)           # Numeric column
+)
+
+# Aggregate the numeric values based on the categories
+library(dplyr)
+selected_columns <- selected_columns %>%
+  group_by(category) %>%
+  summarise(total_value = sum(value))
+
+# Create a pie chart
+library(ggplot2)
+ggplot(selected_columns, aes(x = "cate", y = Country, fill = Quantity Millions)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  scale_fill_manual(values = c("A" = "red", "B" = "blue", "C" = "green")) +
+  theme_void() +
+  labs(title = "Pie Chart for selected columns")
+
+```
+
+```{r}
+rm(selected_columns)
+```
+
+```{r}
+
+# Select the columns and create a new dataset
+new_dataset <- selected_data[, c("Quantity in Millions", "Country")]
+
+# Print the new dataset
+print(new_dataset)
+
+```
+
+```{r}
+rm(China_Global_Investment_Tracker_2023_Fall, cnglobalinvestment1, filtered_data, new_dataset, selected_data)
+```
+
+```{r}
+# Assuming your dataset is called 'my_data' and you want to keep only one value in column 'column_name'
+
+# Replace all values except the one you want to keep
+China_Global_Investment_Tracker_2023_Fall$`Quantity in Millions`[China_Global_Investment_Tracker_2023_Fall$`Quantity in Millions` != "2023"] <- NA
+
+# Replace all values except the one you want to keep
+China_Global_Investment_Tracker_2023_Fall$`Country`[China_Global_Investment_Tracker_2023_Fall$Country != "2023"] <- NA
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+
+```
+
+```{r}
+# Replace all values except the one you want to keep
+China_Global_Investment_Tracker_2023_Fall$Year[China_Global_Investment_Tracker_2023_Fall$Year != "2023"] <- NA
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+
+```
+
+```{r}
+rm(China_Global_Investment_Tracker_2023_Fall)
+```
+
+```{r}
+
+# Assuming your current dataset is called 'current_data' and you want to create a new dataset using columns 'column1' and 'column2'
+
+# Select the columns and create a new dataset
+pie_dataset <- China_Global_Investment_Tracker_2023_Fall[, c("Quantity in Millions", "Country", "Year")]
+
+# Print the new dataset
+print(pie_dataset)
+
+```
+
+```{r}
+# Assuming your dataset is called 'my_data' and the column you want to filter is 'column_name'
+
+# Keep only rows with the desired value in the column
+pie_data_filtered <- pie_dataset[pie_dataset$Year == "2023", ]
+
+# Print the filtered dataset
+print(pie_data_filtered)
+
+```
+
+```{r}
+# Replace all values except the one you want to keep
+China_Global_Investment_Tracker_2023_Fall$Region[China_Global_Investment_Tracker_2023_Fall$Region != "Europe"] <- NA
+
+# Print the modified dataset
+print(China_Global_Investment_Tracker_2023_Fall)
+```
+
+```{r}
+# Assuming your dataset is called 'my_data'
+
+# Remove rows with NA values
+cleaned_data <- na.omit(China_Global_Investment_Tracker_2023_Fall)
+
+# Print the cleaned dataset
+print(cleaned_data)
+
+```
+
+```{r}
+# Load the dplyr package
+library(dplyr)
+
+# Keep only rows with the year 2023
+filtered_data <- China_Global_Investment_Tracker_2023_Fall %>%
+  filter(Year == 2023)
+
+# Print the filtered dataset
+print(filtered_data)
+
+```
+
+```{r}
+
+# Remove rows with NA values in the 'region' column
+filtered_data1 <- filtered_data %>%
+  filter(!is.na(Region))
+
+# Print the filtered dataset
+print(filtered_data1)
+
+```
+
+```{r}
+
+# Create a new dataset with only two columns
+base_data <- filtered_data1[, c("Quantity in Millions", "Country")]
+
+# Print the new dataset
+print(base_data)
+
+```
+
+```{r}
+
+# Create pie chart
+ggplot(base_data, aes(x = "", y = Millions, fill = Country)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +  # Convert to pie chart
+  labs(title = "Investment Received by Country") +
+  theme_void()  # Remove unnecessary elements
+
+```
+
+```{r}
+# Assuming your dataset is named 'your_dataset'
+
+# Create pie chart
+ggplot(base_data, aes(x = "", y = `Quantity in Millions`, fill = `Country`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void()
+
+```
+
+```{r}
+library(plotly)
+```
+
+```{r}
+install.packages("plotly")
+
+```
+
+
+```{r}
+# Load required packages
+library(plotly)
+
+# Assuming your dataset is named 'your_dataset'
+
+# Create pie chart with data labels
+p <- ggplot(base_data, aes(x = "", y = `Quantity in Millions`, fill = `Country`, label = paste(`Country`, ": ", `Quantity in Millions`))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void() +
+  geom_text(size = 3, position = position_stack(vjust = 0.5))  # Add data labels
+
+# Make the plot interactive using plotly
+ggplotly(p)
+
+```
+
+```{r}
+    # Create pie chart with data labels
+    p <- ggplot(base_data, aes(x = "", y = `Quantity in Millions`, fill = `Country`, label = paste(`Country`, ": ", `Quantity in Millions`))) +
+      geom_bar(stat = "identity", width = 1) +
+      coord_polar("y", start = 0) +
+      labs(title = "Investment Received by Country") +
+      theme_void() +
+ geom_text(aes(label = paste(`Country`, ": ", `Quantity in Millions`)), position = position_stack(vjust = 0.5), size = 3) +
+      labs(title = "Investment Received by Country") +
+      theme_void()
+
+# Make the plot interactive using plotly
+    ggplotly(p)
+  } else {
+    print("Error: 'country' column not found in the dataset.")
+  }
+} else {
+  print("Error: 'your_dataset' not found. Make sure your dataset is loaded correctly.")
+}
+```
+
+```{r}
+# Check if the dataset is loaded
+if(exists("base_data")) {
+  # Check if the 'Country' column exists in the dataset
+  if("Country" %in% colnames(base_data)) {
+    # Filter out rows with missing values
+    base_data <- na.omit(base_data)
+    
+    # Install and load required packages
+    if (!requireNamespace("ggplot2", quietly = TRUE)) {
+      install.packages("ggplot2")
+    }
+    if (!requireNamespace("plotly", quietly = TRUE)) {
+      install.packages("plotly")
+    }   
+
+ # Create pie chart with data labels
+    p <- ggplot(base_data, aes(x = "", y = `Quantity in Millions`, fill = `Country`)) +
+      geom_bar(stat = "identity", width = 1) +
+      coord_polar("y", start = 0) +
+      geom_text(aes(label = paste(`Country`, ": ", `Quantity in Millions`)), position = position_stack(vjust = 0.5), size = 3) +
+      labs(title = "Investment Received by Country") +
+      theme_void()
+
+    # Make the plot interactive using plotly
+    ggplotly(p)
+  } else {
+    print("Error: 'country' column not found in the dataset.")
+  }
+} else {
+  print("Error: 'base_data' not found. Make sure your dataset is loaded correctly.")
+}
+
+```
+
+```{r}
+# Assuming your dataset is named 'your_dataset'
+
+# Create pie chart
+ggplot(base_data, aes(x = "", y = `Quantity in Millions`, fill = `Country`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void()
+```
+
+```{r}
+# Load required packages
+install.packages("RColorBrewer")
+library(RColorBrewer)
+```
+
+```{r}
+
+# Aggregate data to calculate total investment for each country
+aggregated_data <- base_data %>%
+  group_by(Country) %>%
+  summarise(Total_Investment = sum(`Quantity in Millions`))
+
+# Get color-blind friendly palette from Color Brewer
+palette <- brewer.pal(n = 12, name = "Set1")  # Adjust the number of colors as needed
+
+# Define custom color palette with 12 colors
+custom_palette <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00", "#6a3d9a", "#b15928",
+                    "#a6cee3", "#b2df8a", "#fb9a99", "#fdbf6f", "#cab2d6", "#ffff99")
+
+# Create pie chart
+ggplot(base_data, aes(x = "", y = `Quantity in Millions`, fill = `Country`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void() +
+  geom_text(aes(label = paste(`Country`, ": ", `Quantity in Millions`)), size = 3, position = position_stack(vjust = 0.5)) +  # Add data labels
+  scale_fill_manual(values = custom_palette)  # Specify custom color palette
+```
+
+```{r}
+# Get color-blind friendly palette from Color Brewer
+palette <- brewer.pal(n = 12, name = "Set1")  # Adjust the number of colors as needed
+
+# Define custom color palette with 12 colors
+custom_palette <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00", "#6a3d9a", "#b15928",
+                    "#a6cee3", "#b2df8a", "#fb9a99", "#fdbf6f", "#cab2d6", "#ffff99")
+
+# Create pie chart
+ggplot(aggregated_data, aes(x = "", y = `Total_Investment`, fill = `Country`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void() +
+  geom_text(aes(label = paste(`Country`, ": ", `Total_Investment`)), size = 3, position = position_stack(vjust = 0.5)) +  # Add data labels
+  scale_fill_manual(values = custom_palette)  # Specify custom color palette
+```
+
+```{r}
+# Install ggtext package if not already installed
+if (!requireNamespace("ggtext", quietly = TRUE)) {
+  install.packages("ggtext")
+}
+
+# Load ggtext package
+library(ggtext)
+
+# Create pie chart with rounded total investment values and interactive labels
+ggplot(aggregated_data, aes(x = "", y = `Total_Investment`, fill = `Country`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void() +
+  geom_text(aes(label = paste0("<b>", `Country`, "</b>", "<br>", "Total Investment: $", round(`Total_Investment`, 2))),
+            size = 3, 
+            nudge_x = 0.2,  # Adjust label position if needed
+            nudge_y = 0.1,  # Adjust label position if needed
+            family = "Arial",
+            check_overlap = TRUE,
+            hjust = 0.5) +  # Add interactive labels with HTML formatting
+  scale_fill_manual(values = custom_palette) +  # Specify custom color palette
+  theme(plot.title = element_text(size = 20))  # Adjust title size if needed
+
+```
+
+```{r}
+# Get color-blind friendly palette from Color Brewer
+palette <- brewer.pal(n = 12, name = "Set1")  # Adjust the number of colors as needed
+
+# Define custom color palette with 12 colors
+custom_palette <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00", "#6a3d9a", "#b15928",
+                    "#a6cee3", "#b2df8a", "#fb9a99", "#fdbf6f", "#cab2d6", "#ffff99")
+
+# Create pie chart
+ggplot(aggregated_data, aes(x = "", y = `Total_Investment`, fill = `Country`)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  labs(title = "Chinese investment in European countries") +
+  theme_void() +
+  geom_text(aes(label = paste(`Country`, ": ", `Total_Investment`)), size = 3, position = position_stack(vjust = 0.5)) +  # Add data labels
+  scale_fill_manual(values = custom_palette)  # Specify custom color palette
+
+```
+
+```{r}
+# Load required libraries
+library(plotly)
+
+# Define custom color palette with 12 colors
+custom_palette <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00", "#6a3d9a", "#b15928",
+                    "#a6cee3", "#b2df8a", "#fb9a99", "#fdbf6f", "#cab2d6", "#ffff99")
+
+# Create pie chart with aggregated data and custom color palette
+p <- plot_ly(aggregated_data, labels = ~Country, values = ~Total_Investment, type = "pie", textinfo = "label+value", marker = list(colors = custom_palette))
+
+# Print the interactive plot
+p
+
+```
+
+```{r}
+# Load required libraries
+library(plotly)
+
+# Define custom color palette with 12 colors
+custom_palette <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00", "#6a3d9a", "#b15928",
+                    "#a6cee3", "#b2df8a", "#fb9a99", "#fdbf6f", "#cab2d6", "#ffff99")
+
+# Create pie chart with aggregated data and custom color palette
+p <- plot_ly(aggregated_data, labels = ~Country, values = ~Total_Investment, type = "pie", textinfo = "label+value", marker = list(colors = custom_palette)) %>%
+  layout(height = 400,  # Adjust height
+         width = 400,   # Adjust width
+         margin = list(l = 100, r = 100, b = 50, t = 50))  # Adjust margins
+
+# Print the interactive plot
+p
+
+```
+
+```{r}
+# Load required libraries
+library(plotly)
+
+# Define custom color palette with 12 colors
+custom_palette <- c("#1f78b4", "#33a02c", "#e31a1c", "#ff7f00", "#6a3d9a", "#b15928",
+                    "#a6cee3", "#b2df8a", "#fb9a99", "#fdbf6f", "#cab2d6", "#ffff99")
+
+# Create pie chart with aggregated data and custom color palette
+p <- plot_ly(aggregated_data, labels = ~Country, values = ~Total_Investment, type = "pie", textinfo = "label+value", marker = list(colors = custom_palette)) %>%
+  layout(height = 400,  # Adjust height
+         width = 400,   # Adjust width
+         margin = list(l = 100, r = 100, b = 50, t = 50),  # Adjust margins
+         title = list(text = "Chinese investment in Europe in 2023", font = list(size = 15), x = 0),  # Title
+         annotations = list(
+           list(x = -0.5, y = -0.15, xref = "paper", yref = "paper", 
+                text = "Source: The American Enterprise Institute and The Heritage Foundation", showarrow = FALSE, font = list(size = 5.3)),
+           list(x = -0.5, y = 0.99, xref = "paper", yref = "paper",  # Adjust position
+                text = "Numbers are in US million dollars", showarrow = FALSE, font = list(size = 10)))  # Subheading
+)  # Footnote
+
+# Print the interactive plot
+p
+
+```
